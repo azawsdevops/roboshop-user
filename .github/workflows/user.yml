@@ -1,26 +1,17 @@
-name: GitHub Actions Demo
-run-name: ${{ github.actor }} is testing out GitHub Actions 🚀
-on: [workflow_dispatch]
+name: user CICD
+run-name: user CICD
+on:
+  push:
+    branches:
+    - main
 jobs:
-  DEV:
-    runs-on: self-hosted
-    steps:
-    - name: Checkout user Helm repo
-      uses: actions/checkout@v4
-      with:
-        repository: azawsdevops/aks-roboshop-helm
-    - run: |
-        bash argocd.sh user dev
-        echo "🎉 The job was automatically triggered by a ${{ github.event_name }} event."
-  QAS:
-    needs: DEV
-    runs-on: self-hosted
-    steps:
-    - run: echo "🎉 The job was automatically triggered by a ${{ github.event_name }} event."
-  PROD:
-    needs: [DEV, QAS]
-    runs-on: self-hosted
-    steps:
-    - run: echo "🎉 The job was automatically triggered by a ${{ github.event_name }} event."
-    
-    ###
+  ci:
+    uses: azawsdevops/github-reusable-modules/.github/workflows/ci.yaml@main
+    with:
+      component: user
+      appType: nodejs
+  deploy:
+    uses: azawsdevops/github-reusable-modules/.github/workflows/deploy.yaml@main
+    with:
+      component: user
+      
